@@ -1,0 +1,12 @@
+.git
+.gitignore
+.cursor
+**/__pycache__
+**/*.pyc
+.env
+.env.*
+*.md
+foto.jpg
+**/*.png
+**/*.jpg
+**/*.jpeg

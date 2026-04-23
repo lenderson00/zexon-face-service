@@ -1,5 +1,9 @@
 FROM python:3.11-slim
 
+# Wheels primeiro = sem compilar insightface (bem mais rápido em linux/amd64)
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+ENV PIP_NO_CACHE_DIR=1
+
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
@@ -11,8 +15,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
+# --prefer-binary: usa .whl do PyPI; evita `Building wheel for insightface` (vários minutos)
+# build-essential só se algum pacote não tiver wheel na tua plataforma
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
-    && pip install --no-cache-dir -r requirements.txt \
+    && python -m pip install --upgrade pip \
+    && pip install --no-cache-dir --prefer-binary -r requirements.txt \
     && apt-get purge -y build-essential \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
